@@ -44,6 +44,12 @@ bot.on('message', function(user, userID, channelID, message, event) {
 bot.on('any', function(event) {
   try {
     if (event.t == 'MESSAGE_REACTION_ADD' && event.d.emoji.name == '📝' && event.d.user_id == bot.id) {
+      bot.removeReaction({
+        channelID: event.d.channel_id,
+        messageID: event.d.message_id,
+        reaction: '📝'
+      });
+
       var message = {};
       var message1 = '';
       bot.getMessages(
@@ -65,10 +71,12 @@ bot.on('any', function(event) {
                 var rgbStr = `rgb(${rgb.join(',')})`;
                 var hex = rgbToHex(rgbStr);
 
+                var time = message.edited_timestamp == null ? message.timestamp : message.edited_timestamp;
+
                   bot.sendMessage({
                     to: event.d.channel_id,
                     //message: ':thinking: Congratulations! This is a placeholder for the quote function! ' + hex,
-                    embed: {timestamp: message.timestamp,author: {name: `${message.author.username}#${message.author.discriminator}`, icon_url: imageUrl}, description: message.content, color: parseInt(hex)}
+                    embed: {timestamp: time,author: {name: `${message.author.username}#${message.author.discriminator}`, icon_url: imageUrl}, description: message.content, color: parseInt(hex)}
                   })
                 }catch(e){
                   console.log(e)
